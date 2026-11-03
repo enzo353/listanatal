@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Feliz Natal - Lista de Presentes</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#9b1c14;color:#fff;font-family:Inter,Arial,sans-serif;text-align:center;padding:20px}
+  .wrap{max-width:560px;margin:0 auto}
+  h1{font-size:clamp(40px,12vw,64px);margin:10px 0;color:#2ecc40;text-shadow:3px 3px 0 #ccc;letter-spacing:2px}
+  .sub{margin:0 0 10px;opacity:.9;font-size:18px}
+  h2{color:#7dff7d;font-size:26px;margin:40px 0 10px}
+
+  .card{display:flex;gap:14px;align-items:center;background:#fff;color:#111;border-radius:12px;
+        padding:14px;margin:14px 0;text-align:left;box-shadow:0 2px 6px #0003}
+  .foto{width:110px;height:110px;flex:none;display:flex;align-items:center;justify-content:center;
+        background:#f2f2f2;border-radius:10px;overflow:hidden}
+  .foto img{width:100%;height:100%;object-fit:contain}
+  .emoji{font-size:48px}
+  .info{flex:1}
+  .nome{font-weight:700;font-size:16px}
+  .desc{font-size:13px;color:#555;margin:4px 0}
+  .preco{font-size:24px;font-weight:800;margin:4px 0 8px}
+  .btn{display:inline-block;background:#1e9e3a;color:#fff;text-decoration:none;
+       padding:9px 18px;border-radius:8px;font-size:14px;font-weight:600}
+  .btn:hover{background:#17802f}
+  footer{margin:40px 0 10px;opacity:.8;font-size:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>FELIZ NATAL</h1>
+  <p class="sub">pode escolher o presente que gostaria de me dar 🎁</p>
+  <div id="lista"></div>
+  <footer>🎄 Obrigado por pensar em mim!</footer>
+</div>
+
+<script>
+/* ====== EDITE AQUI ======
+   faixa: 50, 100 ou 1000 (em qual seção aparece)
+   foto: nome do arquivo dentro da pasta "imagens" (se não achar, mostra o emoji) */
+const PRODUTOS = [
+  // ---------- ATÉ R$ 50 ----------
+  {faixa:50, nome:"Fone de Ouvido In-ear Gamer QKZ Premium AK6", desc:"Fone com fio, ótimo para jogos e música.", preco:33.80, emoji:"🎧", foto:"fone-qkz-ak6.jpg",
+   link:"https://www.mercadolivre.com.br/fone-de-ouvido-in-ear-gamer-qkz-premium-ak6/p/MLB38303054?pdp_filters=item_id:MLB6345633274"},
+  {faixa:50, nome:"Black Clover Vol. 1", desc:"Mangá da Panini, capa mole.", preco:43.90, emoji:"📕", foto:"black-clover-1.jpg",
+   link:"https://www.mercadolivre.com.br/black-clover-vol-1-tabata-yki-panini-capa-mole/p/MLB19228789?pdp_filters=item_id%3AMLB5504893132"},
+  {faixa:50, nome:"Tokyo Ghoul Vol. 7", desc:"Mangá da Panini, capa mole.", preco:43.28, emoji:"📘", foto:"tokyo-ghoul-7.jpg",
+   link:"https://www.mercadolivre.com.br/tokyo-ghoul-vol-7-ishida-sui-panini-capa-mole/p/MLB21798354?pdp_filters=item_id%3AMLB4391657147"},
+  {faixa:50, nome:"Chainsaw Man Vol. 14", desc:"Mangá da Panini, capa mole.", preco:35.59, emoji:"📙", foto:"chainsaw-14.jpg",
+   link:"https://www.mercadolivre.com.br/chainsaw-man-vol-14-fujimoto-tatsuki-panini-capa-mole/p/MLB30016691?pdp_filters=item_id%3AMLB3698760345"},
+  {faixa:50, nome:"Óculos Juliet Lupa Mandrak 24k", desc:"Armação preta com lente roxa.", preco:39.00, emoji:"🕶️", foto:"oculos-juliet.jpg",
+   link:"https://www.mercadolivre.com.br/oculos-juliet-lupa-mandrak-24k-mc-top-lente-roxo-cor-da-armacao/p/MLB27769088?pdp_filters=item_id%3AMLB7536097918"},
+
+  // ---------- ATÉ R$ 100 ----------
+  {faixa:100, nome:"Camiseta Regular Lettering Reckless", desc:"Algodão, cor branca, corte regular.", preco:79.90, emoji:"👕", foto:"camiseta-renner.jpg",
+   link:"https://www.lojasrenner.com.br/p/camiseta-regular-em-algodao-com-lettering-reckless/-/A-932031350-br.lr?sku=932031501"},
+  {faixa:100, nome:"Camisa Compressão UV 50+ Cyber Triball", desc:"Manga curta, proteção UV, estilo rash guard.", preco:39.00, emoji:"🎽", foto:"camisa-shein.jpg",
+   link:"https://br.shein.com/mkt/normal?goods_id=72225590&lang=pt&currency=BRL&skucode=I28f620vds7e"},
+  {faixa:100, nome:"Relógio Poedagar 613", desc:"Aço inoxidável, prata com fundo preto.", preco:95.00, emoji:"⌚", foto:"relogio-poedagar.jpg",
+   link:"https://www.mercadolivre.com.br/relogio-de-pulso-poedagar-613-com-corria-de-aco-inoxidavel-cor-prateado-fondo-preto/p/MLB46210433?pdp_filters=item_id%3AMLB4110537929"},
+  {faixa:100, nome:"Fone de Ouvido Esportivo QKZ com Case", desc:"Fone in-ear para esporte e música, acompanha case.", preco:89.90, emoji:"🎧", foto:"fone-qkz-case.jpg",
+   link:"https://www.kabum.com.br/produto/989330/fone-ouvido-retorno-palco-celular-esportivo-musica-qkz-case"},
+
+  // ---------- ATÉ R$ 1000 ----------
+  {faixa:1000, nome:"Relógio Casio AE-1200WHD-1", desc:"World Time, prata, digital e analógico.", preco:273.05, emoji:"⌚", foto:"casio-ae1200.jpg",
+   link:"https://www.mercadolivre.com.br/relogio-casio-ae-1200whd-1-masculino-word-time-prata-quadrado-cor-da-correia-prateado/p/MLB18283866?pdp_filters=item_id%3AMLB2912757656"},
+  {faixa:1000, nome:"Mouse Gamer Sem Fio Logitech G305", desc:"Lightspeed, 12000 DPI, 6 botões, preto.", preco:179.99, emoji:"🖱️", foto:"mouse-g305.jpg",
+   link:"https://www.kabum.com.br/produto/97092/mouse-gamer-sem-fio-logitech-g305-lightspeed-12000-dpi-6-botoes-preto-910-005281"},
+  {faixa:1000, nome:"Monitor Gamer ASUS TUF 24.5\"", desc:"Full HD, 200Hz, 0.3ms, Fast IPS, G-Sync/FreeSync.", preco:759.99, emoji:"🖥️", foto:"monitor-tuf.jpg",
+   link:"https://www.kabum.com.br/produto/747517/monitor-gamer-asus-tuf-245-full-hd-200hz-03ms-fast-ips-vrr-g-sync-comp-freesync-premium-hdr10-som-integrado-preto-vg259q5a"}
+];
+
+/* ====== CÓDIGO DO SITE (não precisa mexer) ====== */
+const R = v => "R$ " + v.toFixed(2).replace(".", ",");
+
+document.getElementById("lista").innerHTML = [50, 100, 1000].map(f => `
+  <h2>até ${R(f)}</h2>
+  ${PRODUTOS.filter(p => p.faixa === f).map(p => `
+    <div class="card">
+      <div class="foto">
+        <img src="imagens/${p.foto}" alt="${p.nome}"
+             onerror="this.outerHTML='<span class=emoji>${p.emoji}</span>'">
+      </div>
+      <div class="info">
+        <div class="nome">${p.nome}</div>
+        <div class="desc">${p.desc}</div>
+       
+        <a class="btn" href="${p.link}" target="_blank" rel="noopener noreferrer">Ver na loja →</a>
+      </div>
+    </div>`).join("")}
+`).join("");
+</script>
+</body>
+</html>
+
